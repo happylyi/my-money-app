@@ -28,15 +28,14 @@ export default function LoginPage() {
     return () => clearInterval(interval);
   }, [loading]);
 
-  // ✅✅✅ 彻底修复：把函数移到内部，警告永久消失
   useEffect(() => {
-    const checkUser = async () => {
+    async function checkUser() {
       const { data } = await supabase.auth.getUser();
       if (data.user) router.push('/dashboard');
-    };
+    }
     checkUser();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const withTimeout = <T,>(promise: Promise<T>): Promise<T> => {
     return Promise.race([
@@ -53,7 +52,7 @@ export default function LoginPage() {
       return;
     }
     if (password.length < 6) {
-      setMsg('密码长度应至少6位');
+      setMsg('密码长度至少6位');
       return;
     }
 
@@ -70,20 +69,20 @@ export default function LoginPage() {
           router.push('/dashboard');
           return;
         } else {
-          setMsg('请先前往邮箱验证账号');
+          setMsg('请先验证邮箱');
         }
       } else {
         const { error: err2 } = await withTimeout(
           supabase.auth.signUp({ email, password })
         );
         if (err2) {
-          setMsg('操作失败：注册失败，可能是邮箱已存在或密码不符合要求');
+          setMsg('操作失败');
         } else {
-          setMsg('注册成功，请前往邮箱验证');
+          setMsg('注册成功，请验证邮箱');
         }
       }
     } catch (e) {
-      setMsg('操作失败，请稍后重试');
+      setMsg('网络异常，请重试');
     } finally {
       setLoading(false);
     }
@@ -99,9 +98,9 @@ export default function LoginPage() {
 
     try {
       await withTimeout(supabase.auth.resetPasswordForEmail(email));
-      setMsg('重置链接已发送至您的邮箱');
+      setMsg('重置链接已发送');
     } catch (e) {
-      setMsg('发送失败，请稍后重试');
+      setMsg('发送失败');
     } finally {
       setLoading(false);
     }

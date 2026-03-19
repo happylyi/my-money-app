@@ -24,7 +24,7 @@ export default function Page() {
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [lastScrollY]);
+    }, []);
 
     const features = [
         { icon: '📊', title: '智能统计', description: '实时展示收支概览，直观的图表分析' },
@@ -33,7 +33,7 @@ export default function Page() {
         { icon: '🔍', title: '智能筛选', description: '多维度筛选账单，快速找到目标记录' },
     ];
 
-    const mockData = { income: 15680, expense: 8920, balance: 6760 };
+    const mockData = { income: 16380, expense: 8920, balance: 6760 };
 
     return (
         <div className="min-h-screen text-white" style={{
