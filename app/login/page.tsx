@@ -28,14 +28,13 @@ export default function LoginPage() {
     return () => clearInterval(interval);
   }, [loading]);
 
+  // ✅✅✅ 最终修复：函数内联执行，彻底消除依赖警告
   useEffect(() => {
-    async function checkUser() {
+    (async () => {
       const { data } = await supabase.auth.getUser();
       if (data.user) router.push('/dashboard');
-    }
-    checkUser();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    })();
+  }, [router]);
 
   const withTimeout = <T,>(promise: Promise<T>): Promise<T> => {
     return Promise.race([
@@ -69,20 +68,20 @@ export default function LoginPage() {
           router.push('/dashboard');
           return;
         } else {
-          setMsg('请先验证邮箱');
+          setMsg('请先前往邮箱验证账号');
         }
       } else {
         const { error: err2 } = await withTimeout(
           supabase.auth.signUp({ email, password })
         );
         if (err2) {
-          setMsg('操作失败');
+          setMsg('操作失败：注册失败，可能是邮箱已存在或密码不符合要求');
         } else {
-          setMsg('注册成功，请验证邮箱');
+          setMsg('注册成功，请前往邮箱验证');
         }
       }
     } catch (e) {
-      setMsg('网络异常，请重试');
+      setMsg('操作失败，请稍后重试');
     } finally {
       setLoading(false);
     }
@@ -98,9 +97,9 @@ export default function LoginPage() {
 
     try {
       await withTimeout(supabase.auth.resetPasswordForEmail(email));
-      setMsg('重置链接已发送');
+      setMsg('重置链接已发送至您的邮箱');
     } catch (e) {
-      setMsg('发送失败');
+      setMsg('发送失败，请稍后重试');
     } finally {
       setLoading(false);
     }
