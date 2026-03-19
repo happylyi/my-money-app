@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../../supabase';
 import { useRouter } from 'next/navigation';
+
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -10,9 +11,11 @@ export default function LoginPage() {
   const [loadingText, setLoadingText] = useState('处理中');
   const [showForget, setShowForget] = useState(false);
   const router = useRouter();
+
   useEffect(() => {
     document.title = '个人记账1.0';
   }, []);
+
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (loading) {
@@ -24,13 +27,17 @@ export default function LoginPage() {
     }
     return () => clearInterval(interval);
   }, [loading]);
+
   useEffect(() => {
     const checkUser = async () => {
       const { data } = await supabase.auth.getUser();
       if (data.user) router.push('/dashboard');
     };
     checkUser();
+  // ✅ 只加这一行，彻底消除警告，不影响任何功能
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
+
   const withTimeout = <T,>(promise: Promise<T>): Promise<T> => {
     return Promise.race([
       promise,
@@ -39,6 +46,7 @@ export default function LoginPage() {
       ),
     ]);
   };
+
   const handleLogin = async () => {
     if (!email || !password) {
       setMsg('请输入邮箱和密码');
@@ -48,12 +56,15 @@ export default function LoginPage() {
       setMsg('密码长度应至少6位');
       return;
     }
+
     setLoading(true);
     setMsg('');
+
     try {
       const { data, error } = await withTimeout(
         supabase.auth.signInWithPassword({ email, password })
       );
+
       if (!error && data.user) {
         if (data.user.email_confirmed_at) {
           router.push('/dashboard');
@@ -77,6 +88,7 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
+
   const handleForget = async () => {
     if (!email) {
       setMsg('请输入邮箱');
@@ -84,6 +96,7 @@ export default function LoginPage() {
     }
     setLoading(true);
     setMsg('');
+
     try {
       await withTimeout(supabase.auth.resetPasswordForEmail(email));
       setMsg('重置链接已发送至您的邮箱');
@@ -93,11 +106,13 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
+
   return (
     <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
       <div style={{ width: '100%', maxWidth: '420px', background: '#fff', borderRadius: '16px', padding: '40px 32px', boxShadow: '0 10px 40px rgba(0,0,0,0.15)', textAlign: 'center' }}>
         <h2 style={{ fontSize: '28px', fontWeight: 700, marginBottom: 8 }}>个人记账</h2>
         <p style={{ color: '#666', marginBottom: 30 }}>首次登录自动注册</p>
+
         {!showForget ? (
           <>
             <input
@@ -143,6 +158,7 @@ export default function LoginPage() {
             <p style={{ marginTop: '16px', color: '#667eea', cursor: 'pointer' }} onClick={() => setShowForget(false)}>返回登录</p>
           </>
         )}
+
         {msg && <p style={{ color: msg.includes('成功') || msg.includes('已发送') ? '#10b981' : '#ef4444', marginTop: '16px', fontSize: '14px' }}>{msg}</p>}
       </div>
     </div>
