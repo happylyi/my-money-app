@@ -1,21 +1,25 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import Script from 'next/script';
+
+// 强制客户端渲染，彻底解决 Netlify 404 问题
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
-    title: '\u4E2A\u4EBA\u8BB0\u8D26',
-    description: '',
-    metadataBase: new URL('https://1s3gja95to0bni8qyh9lp.onlook.live/'),
+    title: '个人记账',
+    description: '简洁现代的个人财务管理工具',
+    metadataBase: new URL('https://resonant-torte-df239d.netlify.app/'),
 };
+
 export default function RootLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" data-oid="09km0sm">
+        <html lang="zh-CN" data-oid="09km0sm">
             <body className="" data-oid=".oz3393">
                 {children}
-
                 <Script src="/builtwith.js" strategy="afterInteractive" />
             </body>
         </html>
