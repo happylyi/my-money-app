@@ -1,9 +1,19 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { supabase } from '../../supabase';
 import { useRouter, useSearchParams } from 'next/navigation';
 
+// 外层页面 + Suspense 包裹（修复 Netlify 构建错误）
 export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={<div style={{padding:'50px',textAlign:'center'}}>Loading...</div>}>
+      <ResetPasswordContent />
+    </Suspense>
+  );
+}
+
+// 内层真实页面逻辑
+function ResetPasswordContent() {
     const [newPassword, setNewPassword] = useState('');
     const [msg, setMsg] = useState('');
     const [loading, setLoading] = useState(false);
@@ -12,7 +22,6 @@ export default function ResetPasswordPage() {
 
     useEffect(() => {
         document.title = '重置密码 - 个人记账1.0';
-        // 从 URL hash 中读取 recovery_token（Supabase 会把 token 放在 hash 里）
         const hash = window.location.hash;
         if (!hash.includes('recovery_token')) {
             setMsg('无效的重置链接，请重新获取');
