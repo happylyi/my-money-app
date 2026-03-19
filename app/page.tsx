@@ -10,6 +10,7 @@ export default function Page() {
     const [isHeaderVisible, setIsHeaderVisible] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
 
+    // 修复：移除不必要的依赖，消除 ESLint 警告
     useEffect(() => {
         document.title = '个人记账1.0';
         setIsVisible(true);
@@ -26,7 +27,8 @@ export default function Page() {
 
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
-    }, [lastScrollY]);
+    // 修复：去掉 [lastScrollY]，避免无限循环 & 警告
+    }, []);
 
     const features = [
         { icon: '📊', title: '智能统计', description: '实时展示收支概览，直观的图表分析' },
@@ -177,12 +179,32 @@ export default function Page() {
 
                         {activeTab === 'project' && <div className="space-y-4">
                             <div className="flex justify-between items-center"><h4 className="text-xl font-semibold">项目记账</h4><button className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg text-sm transition-colors">新建项目</button></div>
-                            {['装修预算', '旅行基金', '学习投资'].map((project, index) => <div key={index} className="bg-gray-700/40 p-4 rounded-lg flex justify-between items-center hover:bg-gray-600/40 cursor-pointer transition-colors"><div><div className="font-semibold">{project}</div><div className="text-sm text-gray-300">点击进入项目记账</div></div></div>)}
+                            {['装修预算', '旅行基金', '学习投资'].map((project, index) => (
+                                <div key={index} className="bg-gray-700/40 p-4 rounded-lg flex justify-between items-center hover:bg-gray-600/40 cursor-pointer transition-colors">
+                                    <div>
+                                        <div className="font-semibold">{project}</div>
+                                        <div className="text-sm text-gray-300">点击进入项目记账</div>
+                                    </div>
+                                </div>
+                            ))}
                         </div>}
 
                         {activeTab === 'bills' && <div className="space-y-4">
                             <div className="flex justify-between items-center"><h4 className="text-xl font-semibold">账单列表</h4></div>
-                            {[{ type: '支出', category: '餐饮', amount: -45, note: '午餐', time: '今天 12:30' }, { type: '收入', category: '工资', amount: 8000, note: '月薪', time: '昨天 09:00' }].map((bill, index) => <div key={index} className="bg-gray-700/40 p-4 rounded-lg flex justify-between items-center"><div className="flex items-center space-x-3"><div className={`w-2 h-2 rounded-full ${bill.type === '收入' ? 'bg-green-400' : 'bg-red-400'}`}></div><div><div className="font-semibold">{bill.category}</div><div className="text-sm text-gray-300">{bill.note} • {bill.time}</div></div></div><div className={`font-semibold ${bill.type === '收入' ? 'text-green-400' : 'text-red-400'}`}>{bill.amount > 0 ? '+' : ''}¥{Math.abs(bill.amount)}</div></div>)}
+                            {[{ type: '支出', category: '餐饮', amount: -45, note: '午餐', time: '今天 12:30' }, { type: '收入', category: '工资', amount: 8000, note: '月薪', time: '昨天 09:00' }].map((bill, index) => (
+                                <div key={index} className="bg-gray-700/40 p-4 rounded-lg flex justify-between items-center">
+                                    <div className="flex items-center space-x-3">
+                                        <div className={`w-2 h-2 rounded-full ${bill.type === '收入' ? 'bg-green-400' : 'bg-red-400'}`}></div>
+                                        <div>
+                                            <div className="font-semibold">{bill.category}</div>
+                                            <div className="text-sm text-gray-300">{bill.note} • {bill.time}</div>
+                                        </div>
+                                    </div>
+                                    <div className={`font-semibold ${bill.type === '收入' ? 'text-green-400' : 'text-red-400'}`}>
+                                        {bill.amount > 0 ? '+' : ''}¥{Math.abs(bill.amount)}
+                                    </div>
+                                </div>
+                            ))}
                         </div>}
                     </div>
                 </div>
