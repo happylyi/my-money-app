@@ -1,9 +1,7 @@
-// 这一行必须保留，你的页面是客户端交互
 'use client';
 
 import { useState, useEffect } from 'react';
 
-// 👇 加上这一句，强制客户端渲染，解决 Netlify 404 报错
 export const dynamic = 'force-dynamic';
 
 export default function Page() {
@@ -56,9 +54,28 @@ export default function Page() {
                         <a href="#features" className="text-gray-300 hover:text-white transition-colors">功能</a>
                         <a href="#demo" className="text-gray-300 hover:text-white transition-colors">演示</a>
                     </nav>
-                    <button onClick={() => window.location.href = '/login'} style={{
-                        padding: '10px 20px', background: '#ffffff', color: '#667eea', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s',
-                    }} onMouseEnter={(e) => { e.target.style.transform = 'scale(1.05)'; }} onMouseLeave={(e) => { e.target.style.transform = 'scale(1)'; }}>
+                    <button
+                        onClick={() => window.location.href = '/login'}
+                        style={{
+                            padding: '10px 20px',
+                            background: '#ffffff',
+                            color: '#667eea',
+                            border: 'none',
+                            borderRadius: '8px',
+                            fontSize: '14px',
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                            transition: 'all 0.2s',
+                        }}
+                        onMouseEnter={(e) => {
+                            const target = e.currentTarget as HTMLButtonElement;
+                            target.style.transform = 'scale(1.05)';
+                        }}
+                        onMouseLeave={(e) => {
+                            const target = e.currentTarget as HTMLButtonElement;
+                            target.style.transform = 'scale(1)';
+                        }}
+                    >
                         登录/注册
                     </button>
                 </div>
@@ -70,9 +87,31 @@ export default function Page() {
                         <h2 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">个人记账助手</h2>
                         <p className="text-xl text-gray-200 mb-8 max-w-2xl mx-auto">简洁现代的个人财务管理工具，支持日常流水记账和项目专项记账，让您的财务管理更加清晰高效</p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <button onClick={() => window.location.href = '/login'} style={{
-                                padding: '16px 48px', background: '#ffffff', color: '#667eea', border: 'none', borderRadius: '12px', fontSize: '18px', fontWeight: '600', cursor: 'pointer', transition: 'all 0.2s ease', boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
-                            }} onMouseEnter={(e) => { e.target.style.transform = 'translateY(-2px)'; e.target.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.15)'; }} onMouseLeave={(e) => { e.target.style.transform = 'translateY(0)'; e.target.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.1)'; }}>
+                            <button
+                                onClick={() => window.location.href = '/login'}
+                                style={{
+                                    padding: '16px 48px',
+                                    background: '#ffffff',
+                                    color: '#667eea',
+                                    border: 'none',
+                                    borderRadius: '12px',
+                                    fontSize: '18px',
+                                    fontWeight: '600',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.2s ease',
+                                    boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
+                                }}
+                                onMouseEnter={(e) => {
+                                    const target = e.currentTarget as HTMLButtonElement;
+                                    target.style.transform = 'translateY(-2px)';
+                                    target.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.15)';
+                                }}
+                                onMouseLeave={(e) => {
+                                    const target = e.currentTarget as HTMLButtonElement;
+                                    target.style.transform = 'translateY(0)';
+                                    target.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.1)';
+                                }}
+                            >
                                 登录 / 注册
                             </button>
                         </div>
@@ -153,9 +192,31 @@ export default function Page() {
                 <div className="max-w-4xl mx-auto text-center">
                     <h3 className="text-3xl font-bold mb-6">开始您的个人记账之旅</h3>
                     <p className="text-xl text-gray-200 mb-8">支持移动端和桌面端，随时随地管理您的财务</p>
-                    <button onClick={() => window.location.href = '/login'} style={{
-                        padding: '16px 48px', background: '#ffffff', color: '#667eea', border: 'none', borderRadius: '12px', fontSize: '18px', fontWeight: '600', cursor: 'pointer', transition: 'all 0.2s ease', boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
-                    }} onMouseEnter={(e) => { e.target.style.transform = 'translateY(-2px)'; e.target.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.15)'; }} onMouseLeave={(e) => { e.target.style.transform = 'translateY(0)'; e.target.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.1)'; }}>
+                    <button
+                        onClick={() => window.location.href = '/login'}
+                        style={{
+                            padding: '16px 48px',
+                            background: '#ffffff',
+                            color: '#667eea',
+                            border: 'none',
+                            borderRadius: '12px',
+                            fontSize: '18px',
+                            fontWeight: '600',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s ease',
+                            boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
+                        }}
+                        onMouseEnter={(e) => {
+                            const target = e.currentTarget as HTMLButtonElement;
+                            target.style.transform = 'translateY(-2px)';
+                            target.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.15)';
+                        }}
+                        onMouseLeave={(e) => {
+                            const target = e.currentTarget as HTMLButtonElement;
+                            target.style.transform = 'translateY(0)';
+                            target.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.1)';
+                        }}
+                    >
                         登录 / 注册
                     </button>
                     <p className="mt-4 text-gray-300 text-sm">首次登录将自动注册账号</p>
@@ -165,7 +226,13 @@ export default function Page() {
             <footer className="border-t border-gray-800/30 py-12 px-4">
                 <div className="max-w-6xl mx-auto">
                     <div className="grid md:grid-cols-4 gap-8">
-                        <div><div className="flex items-center space-x-2 mb-4"><div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-purple-600 rounded"></div><span className="font-semibold">个人记账</span></div><p className="text-gray-300 text-sm">让财务管理变得简单高效</p></div>
+                        <div>
+                            <div className="flex items-center space-x-2 mb-4">
+                                <div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-purple-600 rounded"></div>
+                                <span className="font-semibold">个人记账</span>
+                            </div>
+                            <p className="text-gray-300 text-sm">让财务管理变得简单高效</p>
+                        </div>
                         <div><h5 className="font-semibold mb-3">产品</h5><ul className="space-y-2 text-sm text-gray-300"><li><a href="#" className="hover:text-white transition-colors">功能介绍</a></li></ul></div>
                         <div><h5 className="font-semibold mb-3">支持</h5><ul className="space-y-2 text-sm text-gray-300"><li><a href="#" className="hover:text-white transition-colors">帮助中心</a></li></ul></div>
                         <div><h5 className="font-semibold mb-3">关于</h5><ul className="space-y-2 text-sm text-gray-300"><li><a href="#" className="hover:text-white transition-colors">隐私政策</a></li></ul></div>
