@@ -24,20 +24,21 @@ export default function LoginPage() {
       interval = setInterval(() => {
         dots = (dots + 1) % 4;
         setLoadingText('处理中' + '.'.repeat(dots));
-      }, 200); // 加快节奏，避免长时间等待
+      }, 200);
     }
     return () => clearInterval(interval);
   }, [loading]);
 
   useEffect(() => {
+    // 把函数定义在 useEffect 内部 → 警告直接消失
     const checkUser = async () => {
       const { data } = await supabase.auth.getUser();
       if (data.user) router.push('/dashboard');
     };
     checkUser();
-  }, [router]);
+  }, [router]); // 依赖保持正确
 
-  // 通用超时包装（逻辑不变，只是为了好看）
+  // 通用超时包装
   const withTimeout = <T,>(promise: Promise<T>): Promise<T> => {
     return Promise.race([
       promise,
@@ -62,13 +63,11 @@ export default function LoginPage() {
     setMsg('');
 
     try {
-      // 尝试登录
       const { data, error } = await withTimeout(
         supabase.auth.signInWithPassword({ email, password })
       );
 
       if (!error && data.user) {
-        // 已验证
         if (data.user.email_confirmed_at) {
           router.push('/dashboard');
           return;
@@ -76,12 +75,10 @@ export default function LoginPage() {
           setMsg('请先前往邮箱验证账号');
         }
       } else {
-        // 登录失败 -> 自动注册
         const { error: err2 } = await withTimeout(
           supabase.auth.signUp({ email, password })
         );
         if (err2) {
-          // 关键：全中文提示，不再显示英文 error
           setMsg('操作失败：注册失败，可能是邮箱已存在或密码不符合要求');
         } else {
           setMsg('注册成功，请前往邮箱验证');
