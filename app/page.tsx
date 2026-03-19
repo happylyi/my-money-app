@@ -1,5 +1,4 @@
 'use client';
-
 import { useState, useEffect } from 'react';
 
 export const dynamic = 'force-dynamic';
@@ -10,11 +9,9 @@ export default function Page() {
     const [isHeaderVisible, setIsHeaderVisible] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
 
-    // 修复：移除不必要的依赖，消除 ESLint 警告
     useEffect(() => {
         document.title = '个人记账1.0';
         setIsVisible(true);
-
         const handleScroll = () => {
             const currentScrollY = window.scrollY;
             if (currentScrollY > lastScrollY && currentScrollY > 50) {
@@ -24,11 +21,10 @@ export default function Page() {
             }
             setLastScrollY(currentScrollY);
         };
-
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
-    // 修复：去掉 [lastScrollY]，避免无限循环 & 警告
-    }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [lastScrollY]);
 
     const features = [
         { icon: '📊', title: '智能统计', description: '实时展示收支概览，直观的图表分析' },
@@ -150,62 +146,84 @@ export default function Page() {
                     </div>
 
                     <div className="bg-gray-800/40 rounded-xl p-6 max-w-4xl mx-auto">
-                        {activeTab === 'overview' && <div className="space-y-6">
-                            <h4 className="text-xl font-semibold mb-4">本月财务概览</h4>
-                            <div className="grid md:grid-cols-3 gap-4">
-                                <div className="bg-green-600/20 border border-green-600/30 p-4 rounded-lg">
-                                    <div className="text-green-300 text-sm">总收入</div>
-                                    <div className="text-2xl font-bold text-green-300">¥{mockData.income.toLocaleString()}</div>
-                                </div>
-                                <div className="bg-red-600/20 border border-red-600/30 p-4 rounded-lg">
-                                    <div className="text-red-300 text-sm">总支出</div>
-                                    <div className="text-2xl font-bold text-red-300">¥{mockData.expense.toLocaleString()}</div>
-                                </div>
-                                <div className="bg-blue-600/20 border border-blue-600/30 p-4 rounded-lg">
-                                    <div className="text-blue-300 text-sm">结余</div>
-                                    <div className="text-2xl font-bold text-blue-300">¥{mockData.balance.toLocaleString()}</div>
-                                </div>
-                            </div>
-                        </div>}
-
-                        {activeTab === 'daily' && <div className="space-y-4">
-                            <h4 className="text-xl font-semibold mb-4">每日流水记账</h4>
-                            <div className="grid md:grid-cols-2 gap-4">
-                                <div><label className="block text-sm text-gray-300 mb-2">金额</label><input type="number" placeholder="0.00" className="w-full bg-gray-700/40 border border-gray-600 rounded-lg px-3 py-2" /></div>
-                                <div><label className="block text-sm text-gray-300 mb-2">类型</label><select className="w-full bg-gray-700/40 border border-gray-600 rounded-lg px-3 py-2"><option>收入</option><option>支出</option></select></div>
-                            </div>
-                            <button className="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded-lg transition-colors">保存记录</button>
-                        </div>}
-
-                        {activeTab === 'project' && <div className="space-y-4">
-                            <div className="flex justify-between items-center"><h4 className="text-xl font-semibold">项目记账</h4><button className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg text-sm transition-colors">新建项目</button></div>
-                            {['装修预算', '旅行基金', '学习投资'].map((project, index) => (
-                                <div key={index} className="bg-gray-700/40 p-4 rounded-lg flex justify-between items-center hover:bg-gray-600/40 cursor-pointer transition-colors">
-                                    <div>
-                                        <div className="font-semibold">{project}</div>
-                                        <div className="text-sm text-gray-300">点击进入项目记账</div>
+                        {activeTab === 'overview' && (
+                            <div className="space-y-6">
+                                <h4 className="text-xl font-semibold mb-4">本月财务概览</h4>
+                                <div className="grid md:grid-cols-3 gap-4">
+                                    <div className="bg-green-600/20 border border-green-600/30 p-4 rounded-lg">
+                                        <div className="text-green-300 text-sm">总收入</div>
+                                        <div className="text-2xl font-bold text-green-300">¥{mockData.income.toLocaleString()}</div>
+                                    </div>
+                                    <div className="bg-red-600/20 border border-red-600/30 p-4 rounded-lg">
+                                        <div className="text-red-300 text-sm">总支出</div>
+                                        <div className="text-2xl font-bold text-red-300">¥{mockData.expense.toLocaleString()}</div>
+                                    </div>
+                                    <div className="bg-blue-600/20 border border-blue-600/30 p-4 rounded-lg">
+                                        <div className="text-blue-300 text-sm">结余</div>
+                                        <div className="text-2xl font-bold text-blue-300">¥{mockData.balance.toLocaleString()}</div>
                                     </div>
                                 </div>
-                            ))}
-                        </div>}
+                            </div>
+                        )}
 
-                        {activeTab === 'bills' && <div className="space-y-4">
-                            <div className="flex justify-between items-center"><h4 className="text-xl font-semibold">账单列表</h4></div>
-                            {[{ type: '支出', category: '餐饮', amount: -45, note: '午餐', time: '今天 12:30' }, { type: '收入', category: '工资', amount: 8000, note: '月薪', time: '昨天 09:00' }].map((bill, index) => (
-                                <div key={index} className="bg-gray-700/40 p-4 rounded-lg flex justify-between items-center">
-                                    <div className="flex items-center space-x-3">
-                                        <div className={`w-2 h-2 rounded-full ${bill.type === '收入' ? 'bg-green-400' : 'bg-red-400'}`}></div>
+                        {activeTab === 'daily' && (
+                            <div className="space-y-4">
+                                <h4 className="text-xl font-semibold mb-4">每日流水记账</h4>
+                                <div className="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm text-gray-300 mb-2">金额</label>
+                                        <input type="number" placeholder="0.00" className="w-full bg-gray-700/40 border border-gray-600 rounded-lg px-3 py-2" />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm text-gray-300 mb-2">类型</label>
+                                        <select className="w-full bg-gray-700/40 border border-gray-600 rounded-lg px-3 py-2">
+                                            <option>收入</option>
+                                            <option>支出</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button className="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded-lg transition-colors">保存记录</button>
+                            </div>
+                        )}
+
+                        {activeTab === 'project' && (
+                            <div className="space-y-4">
+                                <div className="flex justify-between items-center">
+                                    <h4 className="text-xl font-semibold">项目记账</h4>
+                                    <button className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg text-sm transition-colors">新建项目</button>
+                                </div>
+                                {['装修预算', '旅行基金', '学习投资'].map((project, index) => (
+                                    <div key={index} className="bg-gray-700/40 p-4 rounded-lg flex justify-between items-center hover:bg-gray-600/40 cursor-pointer transition-colors">
                                         <div>
-                                            <div className="font-semibold">{bill.category}</div>
-                                            <div className="text-sm text-gray-300">{bill.note} • {bill.time}</div>
+                                            <div className="font-semibold">{project}</div>
+                                            <div className="text-sm text-gray-300">点击进入项目记账</div>
                                         </div>
                                     </div>
-                                    <div className={`font-semibold ${bill.type === '收入' ? 'text-green-400' : 'text-red-400'}`}>
-                                        {bill.amount > 0 ? '+' : ''}¥{Math.abs(bill.amount)}
-                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {activeTab === 'bills' && (
+                            <div className="space-y-4">
+                                <div className="flex justify-between items-center">
+                                    <h4 className="text-xl font-semibold">账单列表</h4>
                                 </div>
-                            ))}
-                        </div>}
+                                {[{ type: '支出', category: '餐饮', amount: -45, note: '午餐', time: '今天 12:30' }, { type: '收入', category: '工资', amount: 8000, note: '月薪', time: '昨天 09:00' }].map((bill, index) => (
+                                    <div key={index} className="bg-gray-700/40 p-4 rounded-lg flex justify-between items-center">
+                                        <div className="flex items-center space-x-3">
+                                            <div className={`w-2 h-2 rounded-full ${bill.type === '收入' ? 'bg-green-400' : 'bg-red-400'}`}></div>
+                                            <div>
+                                                <div className="font-semibold">{bill.category}</div>
+                                                <div className="text-sm text-gray-300">{bill.note} • {bill.time}</div>
+                                            </div>
+                                        </div>
+                                        <div className={`font-semibold ${bill.type === '收入' ? 'text-green-400' : 'text-red-400'}`}>
+                                            {bill.amount > 0 ? '+' : ''}¥{Math.abs(bill.amount)}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </div>
             </section>
@@ -255,9 +273,24 @@ export default function Page() {
                             </div>
                             <p className="text-gray-300 text-sm">让财务管理变得简单高效</p>
                         </div>
-                        <div><h5 className="font-semibold mb-3">产品</h5><ul className="space-y-2 text-sm text-gray-300"><li><a href="#" className="hover:text-white transition-colors">功能介绍</a></li></ul></div>
-                        <div><h5 className="font-semibold mb-3">支持</h5><ul className="space-y-2 text-sm text-gray-300"><li><a href="#" className="hover:text-white transition-colors">帮助中心</a></li></ul></div>
-                        <div><h5 className="font-semibold mb-3">关于</h5><ul className="space-y-2 text-sm text-gray-300"><li><a href="#" className="hover:text-white transition-colors">隐私政策</a></li></ul></div>
+                        <div>
+                            <h5 className="font-semibold mb-3">产品</h5>
+                            <ul className="space-y-2 text-sm text-gray-300">
+                                <li><a href="#" className="hover:text-white transition-colors">功能介绍</a></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5 className="font-semibold mb-3">支持</h5>
+                            <ul className="space-y-2 text-sm text-gray-300">
+                                <li><a href="#" className="hover:text-white transition-colors">帮助中心</a></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5 className="font-semibold mb-3">关于</h5>
+                            <ul className="space-y-2 text-sm text-gray-300">
+                                <li><a href="#" className="hover:text-white transition-colors">隐私政策</a></li>
+                            </ul>
+                        </div>
                     </div>
                     <div className="border-t border-gray-800/30 mt-8 pt-8 text-center text-gray-300 text-sm">© 2026 个人记账. 保留所有权利.</div>
                 </div>
