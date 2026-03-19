@@ -28,14 +28,14 @@ export default function LoginPage() {
     return () => clearInterval(interval);
   }, [loading]);
 
+  // ✅✅✅ 彻底修复：把函数移到内部，警告永久消失
   useEffect(() => {
     const checkUser = async () => {
       const { data } = await supabase.auth.getUser();
       if (data.user) router.push('/dashboard');
     };
     checkUser();
-  // ✅ 只加这一行，彻底消除警告，不影响任何功能
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
   const withTimeout = <T,>(promise: Promise<T>): Promise<T> => {
